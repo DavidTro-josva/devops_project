@@ -1,0 +1,27 @@
+---
+- name: Deploy Flask E-Commerce app on Minikube
+  hosts: local
+  connection: local
+  tasks:
+    - name: Check Kubernetes cluster status
+      command: kubectl cluster-info
+      register: cluster_info
+      ignore_errors: yes
+
+    - name: Show Kubernetes cluster info
+      debug:
+        var: cluster_info.stdout
+
+    - name: Apply Kubernetes Deployment
+      command: kubectl apply -f k8s/deployment.yaml
+
+    - name: Apply Kubernetes Service
+      command: kubectl apply -f k8s/service.yaml
+
+    - name: Get all Kubernetes pods
+      command: kubectl get pods -o wide
+      register: pod_list
+
+    - name: Show running pods
+      debug:
+        var: pod_list.stdout
